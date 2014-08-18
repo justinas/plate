@@ -30,11 +30,13 @@ type Recorder struct {
 }
 
 func (r *Recorder) Execute(wr io.Writer, data interface{}) error {
-	return nil
+	err := r.Template.Execute(wr, data)
+	return err
 }
 
 func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) error {
-	return nil
+	err := r.Template.ExecuteTemplate(wr, name, data)
+	return err
 }
 
 // Ensure interface compliance
