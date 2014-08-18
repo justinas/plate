@@ -90,6 +90,12 @@ func (r *Recorder) LastExecution() Execution {
 	return r.execs[len(r.execs)-1]
 }
 
+// TimesRendered() returns times template was rendered in int
+// This is since construction or Reset()
+func (r *Recorder) TimesRendered() int {
+	return len(r.execs)
+}
+
 // Reset() clears all executions. Recorder is thus restored to its initial state.
 func (r *Recorder) Reset() {
 	r.mu.Lock()
