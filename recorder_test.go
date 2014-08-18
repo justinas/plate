@@ -50,14 +50,15 @@ func TestRecorderExecutesNamedTemplates(t *testing.T) {
 // produced by the inner Executor
 func TestRecorderRelaysErrors(t *testing.T) {
 	// Lookup a non-existent context member at runtime to produce an error.
-	tpl := template.Must(template.New("t1").Parse(`{{ .Name }}`))
+	tpl := template.Must(template.New("t1").Parse(`{{ .Email }}`))
 	rec := &Recorder{Template: tpl}
+	ctx := struct{ Name string }{"John"}
 
 	buf1 := &bytes.Buffer{}
 	buf2 := &bytes.Buffer{}
 
-	err1 := tpl.Execute(buf1, nil)
-	err2 := rec.Execute(buf2, nil)
+	err1 := tpl.Execute(buf1, ctx)
+	err2 := rec.Execute(buf2, ctx)
 
 	assert.NotNil(t, err1)
 	assert.Equal(t, err1, err2)
