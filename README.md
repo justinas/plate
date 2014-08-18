@@ -12,8 +12,7 @@ whether the correct context has been passed to it
 and catch errors that occur.
 
 ### Usage
-Rewrite your template variables to have the type `plate.Executor`.
-
+First, rewrite your template variables to have the type `plate.Executor`.
 In short, transform this:
 
 ```go
@@ -30,8 +29,7 @@ var tmpl plate.Executor
 var templates map[string]plate.Executor
 ```
 
-Don't worry, your templates implement `plate.Executor` automatically.
-
+Your templates will implement `plate.Executor` automatically.
 Then, in your tests, wrap your template in a `plate.Recorder`:
 
 ```go
@@ -45,7 +43,7 @@ the recorder will accumulate the result of all executions:
 the output that template produced, the context passed to it
 and an error returned from an `Execute*()` call.
 
-That information thus can be checked later
+That information can be checked later
 to find out any faults in the execution of your template.
 
 ```go
