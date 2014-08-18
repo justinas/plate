@@ -16,11 +16,11 @@ type Execution struct {
 	Error error
 }
 
-// Recorder wraps an Executable and
+// Recorder wraps an Executor and
 // records results of executions for later checks.
 type Recorder struct {
 	// The original template to wrap.
-	Template Executable
+	Template Executor
 
 	mu sync.RWMutex
 	// Stores exucution info
@@ -36,4 +36,4 @@ func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) 
 }
 
 // Ensure interface compliance
-var _ Executable = &Recorder{}
+var _ Executor = &Recorder{}
