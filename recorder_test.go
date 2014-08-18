@@ -56,8 +56,8 @@ func TestRecorderRelaysErrors(t *testing.T) {
 	buf1 := &bytes.Buffer{}
 	buf2 := &bytes.Buffer{}
 
-	err1 := tpl.ExecuteTemplate(buf1, "t2", nil)
-	err2 := rec.ExecuteTemplate(buf2, "t2", nil)
+	err1 := tpl.Execute(buf1, nil)
+	err2 := rec.Execute(buf2, nil)
 
 	assert.NotNil(t, err1)
 	assert.Equal(t, err1, err2)
