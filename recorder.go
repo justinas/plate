@@ -1,6 +1,7 @@
 package plate
 
 import (
+	"bytes"
 	"io"
 	"sync"
 )
@@ -29,15 +30,63 @@ type Recorder struct {
 	execs []Execution
 }
 
+func (r *Recorder) save(exec Execution) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.execs = append(r.execs, exec)
+}
+
 func (r *Recorder) Execute(wr io.Writer, data interface{}) error {
-	err := r.Template.Execute(wr, data)
+	exec := Execution{Context: data}
+
+	// Substitute the reader
+	buf := &bytes.Buffer{}
+	writer := io.MultiWriter(buf, wr)
+
+	// Execute and fill out the results
+	err := r.Template.Execute(writer, data)
+	exec.Output = buf.Bytes()
+	exec.Error = err
+
+	r.save(exec)
 	return err
 }
 
 func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) error {
-	err := r.Template.ExecuteTemplate(wr, name, data)
+	exec := Execution{Context: data}
+
+	// Substitute the reader
+	buf := &bytes.Buffer{}
+	writer := io.MultiWriter(buf, wr)
+
+	// Execute and fill out the results
+	err := r.Template.ExecuteTemplate(writer, name, data)
+	exec.Output = buf.Bytes()
+	exec.Error = err
+
+	// Save the execution
+
+	r.save(exec)
 	return err
 }
+
+/*
+// Executions() return all executions that have occured
+// since the construction of a Recorder (or since Reset()).
+func (r *Recorder) Executions() []Execution {
+	return nil
+}
+
+// LastExecution() returns the last execution.
+// It (does what???) if no executions occured yet.
+func (r *Recorder) LastExecution() Execution {
+	return Execution{}
+}
+
+// Reset() clears all executions. Recorder is thus restored to its initial state.
+func (r *Recorder) Reset() {
+}
+*/
 
 // Ensure interface compliance
 var _ Executor = &Recorder{}

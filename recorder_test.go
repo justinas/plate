@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type testCase struct {
+	template string
+	context  interface{}
+}
+
 // This test checks that Recorder executes templates
 // as they would be executed without it, that is,
 // that it makes no changes to the Execute*() calls,
@@ -62,4 +67,66 @@ func TestRecorderRelaysErrors(t *testing.T) {
 
 	assert.NotNil(t, err1)
 	assert.Equal(t, err1, err2)
+}
+
+// Tests that recorder accumulates a history of executions
+func TestRecorderRecordsExecutions(t *testing.T) {
+	commonCtx := struct{ Name string }{"John"}
+
+	var cases = []testCase{
+		// A valid template
+		{`{{ .Name }}`, commonCtx},
+		// A template with a runtime error
+		{`{{ .Email }}`, commonCtx},
+	}
+
+	var namedCases = []testCase{
+		// A valid template
+		{`{{ define "t2" }}Hi, {{ .Name }}{{ end }}`, commonCtx},
+		// A template with a runtime error
+		{`{{ define "t2" }}Hi, {{ .Email }}{{ end }}`, commonCtx},
+	}
+
+	for _, c := range cases {
+		buf1 := &bytes.Buffer{}
+		buf2 := &bytes.Buffer{}
+
+		tpl := template.Must(template.New("t1").Parse(c.template))
+		ctx := c.context
+		rec := &Recorder{Template: tpl}
+
+		err := tpl.Execute(buf1, ctx)
+		_ = rec.Execute(buf2, ctx)
+
+		if !assert.Equal(t, len(rec.execs), 1) {
+			t.FailNow()
+		}
+
+		assert.Equal(t, rec.execs[0].Error, err)
+		assert.Equal(t, rec.execs[0].Output, buf1.Bytes())
+		assert.Equal(t, rec.execs[0].Context, ctx)
+	}
+
+	for _, c := range namedCases {
+		buf1 := &bytes.Buffer{}
+		buf2 := &bytes.Buffer{}
+
+		tpl := template.Must(template.New("t1").Parse(c.template))
+		ctx := c.context
+		rec := &Recorder{Template: tpl}
+
+		err := tpl.ExecuteTemplate(buf1, "t2", ctx)
+		_ = rec.ExecuteTemplate(buf2, "t2", ctx)
+
+		if !assert.Equal(t, len(rec.execs), 1) {
+			t.FailNow()
+		}
+
+		assert.Equal(t, rec.execs[0].Error, err)
+		assert.Equal(t, rec.execs[0].Output, buf1.Bytes())
+		assert.Equal(t, rec.execs[0].Context, ctx)
+
+		buf1.Reset()
+		buf2.Reset()
+	}
 }
