@@ -96,6 +96,18 @@ func (r *Recorder) TimesRendered() int {
 	return len(r.execs)
 }
 
+// FailedExecutions() returns all executions that have Error != nil
+func (r *Recorder) FailedExecutions() []Execution {
+	failedExecs := make([]Execution, 0)
+	for _,exec := range r.execs {
+		if exec.Error != nil {
+			failedExecs = append(failedExecs, exec)
+		}
+	}
+
+	return failedExecs
+}
+
 // Reset() clears all executions. Recorder is thus restored to its initial state.
 func (r *Recorder) Reset() {
 	r.mu.Lock()
