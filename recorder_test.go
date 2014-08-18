@@ -2,8 +2,10 @@ package plate
 
 import (
 	"bytes"
+	"errors"
 	"testing"
 	"text/template"
+	"unsafe"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -129,4 +131,52 @@ func TestRecorderRecordsExecutions(t *testing.T) {
 		buf1.Reset()
 		buf2.Reset()
 	}
+}
+
+func TestExecutions(t *testing.T) {
+	r := Recorder{}
+
+	execs := []Execution{Execution{}, Execution{Context: "hello"}}
+	r.execs = execs
+	gotExecs := r.Executions()
+
+	// It should return the same executions
+	assert.Equal(t, execs, gotExecs)
+	// But in a different slice
+	assert.NotEqual(t, unsafe.Pointer(&execs[0]), unsafe.Pointer(&gotExecs[0]))
+}
+
+func TestFailedExecutions(t *testing.T) {
+	r := Recorder{}
+	r.execs = []Execution{Execution{}, Execution{Error: errors.New("oops")}}
+
+	failed := r.FailedExecutions()
+	assert.Equal(t, len(failed), 1)
+	assert.Equal(t, failed[0], r.execs[1])
+}
+
+func TestLastExecution(t *testing.T) {
+	r := Recorder{}
+
+	// No executions yet, panic.
+	assert.Panics(t, func() { r.LastExecution() })
+
+	r.execs = []Execution{Execution{}, Execution{Context: "hi"}}
+	assert.Equal(t, r.LastExecution(), r.execs[1])
+}
+
+func TestTimesExecuted(t *testing.T) {
+	r := Recorder{}
+	r.execs = make([]Execution, 42)
+	assert.Equal(t, r.TimesExecuted(), 42)
+}
+
+func TestReset(t *testing.T) {
+	r := Recorder{}
+	r.execs = []Execution{Execution{}, Execution{}, Execution{}, Execution{}}
+	r.Reset()
+
+	assert.Equal(t, r.TimesExecuted(), 0)
+	assert.Equal(t, r.Executions(), []Execution{})
+	assert.Panics(t, func() { r.LastExecution() })
 }
