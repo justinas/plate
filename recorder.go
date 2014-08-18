@@ -75,6 +75,8 @@ func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) 
 // since the construction of a Recorder (or since Reset()).
 func (r *Recorder) Executions() []Execution {
 	tmpExecs := make([]Execution, len(r.execs))
+	// We do a copy, because callee may mess around with internal []Execution
+	// and we do not want this.
 	copy(tmpExecs, r.execs)
 	return tmpExecs
 }
