@@ -92,7 +92,7 @@ func (r *Recorder) Executions() []Execution {
 }
 
 // LastExecution returns the information of the latest execution.
-// It panics if no executions have occured yet.
+// LastExecution PANICS if no executions have occured yet.
 func (r *Recorder) LastExecution() Execution {
 	if len(r.execs) < 1 {
 		panic("No executions are available yet.")
