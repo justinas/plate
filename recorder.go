@@ -1,10 +1,8 @@
 package plate
 
 import (
-	"html/template"
-	"text/template"
 	"io"
-	"byte"
+	"sync"
 )
 
 // Execution represents one occurence of template being executed.
@@ -18,10 +16,24 @@ type Execution struct {
 	Error error
 }
 
+// Recorder wraps an Executable and
+// records results of executions for later checks.
 type Recorder struct {
-    // Main stuff
-    Template Executable
+	// The original template to wrap.
+	Template Executable
 
-    // Stores exucution info
-    execs []Execution
+	mu sync.RWMutex
+	// Stores exucution info
+	execs []Execution
 }
+
+func (r *Recorder) Execute(wr io.Writer, data interface{}) error {
+	return nil
+}
+
+func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) error {
+	return nil
+}
+
+// Ensure interface compliance
+var _ Executable = &Recorder{}
