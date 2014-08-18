@@ -77,6 +77,8 @@ func (r *Recorder) Executions() []Execution {
 	tmpExecs := make([]Execution, len(r.execs))
 	// We do a copy, because callee may mess around with internal []Execution
 	// and we do not want this.
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 	copy(tmpExecs, r.execs)
 	return tmpExecs
 }
@@ -99,6 +101,8 @@ func (r *Recorder) TimesRendered() int {
 // FailedExecutions() returns all executions that have Error != nil
 func (r *Recorder) FailedExecutions() []Execution {
 	failedExecs := make([]Execution, 0)
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 	for _,exec := range r.execs {
 		if exec.Error != nil {
 			failedExecs = append(failedExecs, exec)
