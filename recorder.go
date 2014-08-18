@@ -64,14 +64,11 @@ func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) 
 	exec.Output = buf.Bytes()
 	exec.Error = err
 
-	// Save the execution
-
 	r.save(exec)
 	return err
 }
 
-
-// Executions() return all executions that have occured
+// Executions returns all executions that have occured
 // since the construction of a Recorder (or since Reset()).
 func (r *Recorder) Executions() []Execution {
 	tmpExecs := make([]Execution, len(r.execs))
@@ -83,8 +80,8 @@ func (r *Recorder) Executions() []Execution {
 	return tmpExecs
 }
 
-// LastExecution() returns the last execution.
-// It panics if no executions occured yet.
+// LastExecution returns the information of the latest execution.
+// It panics if no executions have occured yet.
 func (r *Recorder) LastExecution() Execution {
 	if len(r.execs) < 1 {
 		panic("No executions are available yet.")
@@ -94,18 +91,19 @@ func (r *Recorder) LastExecution() Execution {
 	return r.execs[len(r.execs)-1]
 }
 
-// TimesRendered() returns times template was rendered in int
-// This is since construction or Reset()
+// TimesRendered returns the count of times
+// template has been rendered
+// since construction or calling Reset().
 func (r *Recorder) TimesRendered() int {
 	return len(r.execs)
 }
 
-// FailedExecutions() returns all executions that have Error != nil
+// FailedExecutions returns all executions that have Error != nil
 func (r *Recorder) FailedExecutions() []Execution {
 	failedExecs := make([]Execution, 0)
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	for _,exec := range r.execs {
+	for _, exec := range r.execs {
 		if exec.Error != nil {
 			failedExecs = append(failedExecs, exec)
 		}
@@ -114,7 +112,7 @@ func (r *Recorder) FailedExecutions() []Execution {
 	return failedExecs
 }
 
-// Reset() clears all executions. Recorder is thus restored to its initial state.
+// Reset clears all executions. Recorder is thus restored to its initial state.
 func (r *Recorder) Reset() {
 	r.mu.Lock()
 	defer r.mu.Unlock()
