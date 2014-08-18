@@ -82,11 +82,13 @@ func (r *Recorder) Executions() []Execution {
 func (r *Recorder) LastExecution() Execution {
 	return Execution{}
 }
-
+*/
 // Reset() clears all executions. Recorder is thus restored to its initial state.
 func (r *Recorder) Reset() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.execs = make([]Execution)
 }
-*/
 
 // Ensure interface compliance
 var _ Executor = &Recorder{}
