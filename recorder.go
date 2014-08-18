@@ -76,13 +76,16 @@ func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) 
 func (r *Recorder) Executions() []Execution {
 	return nil
 }
-
-// LastExecution() returns the last execution.
-// It (does what???) if no executions occured yet.
-func (r *Recorder) LastExecution() Execution {
-	return Execution{}
-}
 */
+// LastExecution() returns the last execution.
+// It panics if no executions occured yet.
+func (r *Recorder) LastExecution() Execution {
+	if len(r.execs) < 1 {
+		panic("No executions are available yet.")
+	}
+	return r.execs[len(r.execs)-1]
+}
+
 // Reset() clears all executions. Recorder is thus restored to its initial state.
 func (r *Recorder) Reset() {
 	r.mu.Lock()
