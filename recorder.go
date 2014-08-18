@@ -1,3 +1,4 @@
+// Package plate provides a Recorder for testing Go's HTML templates.
 package plate
 
 import (
