@@ -91,10 +91,10 @@ func (r *Recorder) LastExecution() Execution {
 	return r.execs[len(r.execs)-1]
 }
 
-// TimesRendered returns the count of times
-// template has been rendered
+// TimesExecuted returns the count of times
+// template has been executed
 // since construction or calling Reset().
-func (r *Recorder) TimesRendered() int {
+func (r *Recorder) TimesExecuted() int {
 	return len(r.execs)
 }
 
