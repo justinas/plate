@@ -22,6 +22,8 @@ type Recorder struct {
 	// The original template to wrap.
 	Template Executor
 
+	// Go's templates are already safe to be used in parallel,
+	// this mutex only protects our own fields, like `execs`.
 	mu sync.RWMutex
 	// Stores exucution info
 	execs []Execution
