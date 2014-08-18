@@ -89,7 +89,11 @@ func (r *Recorder) LastExecution() Execution {
 	if len(r.execs) < 1 {
 		panic("No executions are available yet.")
 	}
-	return r.execs[len(r.execs)-1]
+	tmpExec := make([]Execution, 1)
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	copy(tmpExec, r.execs[len(r.execs)-1])
+	return tmpExec
 }
 
 // TimesRendered() returns times template was rendered in int
