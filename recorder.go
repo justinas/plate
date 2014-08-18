@@ -36,6 +36,8 @@ func (r *Recorder) save(exec Execution) {
 	r.execs = append(r.execs, exec)
 }
 
+// Execute executes the wrapped template,
+// saving information into the Recorder.
 func (r *Recorder) Execute(wr io.Writer, data interface{}) error {
 	exec := Execution{Context: data}
 
@@ -52,6 +54,7 @@ func (r *Recorder) Execute(wr io.Writer, data interface{}) error {
 	return err
 }
 
+// ExecuteTemplate is like Execute, but for named teplates.
 func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) error {
 	exec := Execution{Context: data}
 
