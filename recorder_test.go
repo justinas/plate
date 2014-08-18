@@ -15,6 +15,13 @@ type testCase struct {
 	context  interface{}
 }
 
+func TestNew(t *testing.T) {
+	tpl := template.Must(template.New("t1").Parse("hi"))
+	r1 := &Recorder{Template: tpl}
+	r2 := New(tpl)
+	assert.Equal(t, r1, r2)
+}
+
 // This test checks that Recorder executes templates
 // as they would be executed without it, that is,
 // that it makes no changes to the Execute*() calls,
