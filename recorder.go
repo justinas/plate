@@ -31,6 +31,9 @@ type Recorder struct {
 	execs []Execution
 }
 
+// New() returns a new Recorder wrapping the given template.
+// It is equivalent to:
+//    &Recorder{Template: tmpl}
 func New(tmpl Executor) *Recorder {
 	return &Recorder{Template: tmpl}
 }
