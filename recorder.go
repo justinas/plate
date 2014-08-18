@@ -7,9 +7,15 @@ import (
 	"byte"
 )
 
+// Execution represents one occurence of template being executed.
+// It provides access to the output produced,
+// the context that was passed to the template
+// and the error returned from the Execute*() function, if any.
 type Execution struct {
-	Err bool
-	Output []byte
+	Output  []byte
+	Context interface{}
+
+	Error error
 }
 
 type Recorder struct {
