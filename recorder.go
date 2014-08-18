@@ -87,7 +87,7 @@ func (r *Recorder) LastExecution() Execution {
 func (r *Recorder) Reset() {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	r.execs = make([]Execution)
+	r.execs = make([]Execution, 0)
 }
 
 // Ensure interface compliance
