@@ -1,5 +1,8 @@
 # Plate
 
+[![Build Status](https://travis-ci.org/justinas/plate.svg?branch=master)](https://travis-ci.org/justinas/plate)
+[![GoDoc](https://godoc.org/github.com/justinas/plate?status.svg)](https://godoc.org/github.com/justinas/plate)
+
 Plate is a wrapper for Go's `html/template` (or `text/template`)
 that helps you test your template execution.
 
