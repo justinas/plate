@@ -31,6 +31,10 @@ type Recorder struct {
 	execs []Execution
 }
 
+func New(tmpl Executor) {
+	return Recorder{Template: tmpl}
+}
+
 func (r *Recorder) save(exec Execution) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
