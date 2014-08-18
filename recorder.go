@@ -70,13 +70,15 @@ func (r *Recorder) ExecuteTemplate(wr io.Writer, name string, data interface{}) 
 	return err
 }
 
-/*
+
 // Executions() return all executions that have occured
 // since the construction of a Recorder (or since Reset()).
 func (r *Recorder) Executions() []Execution {
-	return nil
+	tmpExecs := make([]Execution, len(r.execs))
+	copy(tmpExecs, r.execs)
+	return tmpExecs
 }
-*/
+
 // LastExecution() returns the last execution.
 // It panics if no executions occured yet.
 func (r *Recorder) LastExecution() Execution {
