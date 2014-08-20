@@ -33,9 +33,11 @@ Your templates will implement `plate.Executor` automatically.
 Then, in your tests, wrap your template in a `plate.Recorder`:
 
 ```go
-tmpl = plate.New(realTemplate)
+recorder := plate.New(tmpl)
+tmpl = recorder
 // or
-templates["index.html"] = plate.New(realTemplate)
+recorder := plate.New(tmpl)
+templates["index.html"] = recorder
 ```
 
 The template will execute as before, except for one thing:
